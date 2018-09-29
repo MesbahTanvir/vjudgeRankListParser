@@ -28,8 +28,8 @@ int parseRank(string str){
 }
 string parseTeamName(string str){
     //<div><a href="/user/zuccbot_exe" target="_blank">zuccbot_exe <span style="color:gray">(TonmoyNirjhorSafayat)</span></a></div>
-    str = str.substr(5,str.size()-string("</span></a></div>").size() - string("<div>").size());
-    //<a href="/user/zuccbot_exe" target="_blank">zuccbot_exe <span style="color:gray">(TonmoyNirjhorSafayat)
+    str = str.substr(5,str.size()- string("<div>").size());
+    //<a href="/user/zuccbot_exe" target="_blank">zuccbot_exe <span style="color:gray">(TonmoyNirjhorSafayat)</span></a></div>
     string name;
     int start=false;
     for(auto c : str){
