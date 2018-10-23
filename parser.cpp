@@ -1,12 +1,14 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define MAXN 1005
+#define MAXN 10005
 vector < string > vec;
 char data[MAXN];
 string team[MAXN];
 int totalPenalty[MAXN];
 int totalSolve[MAXN];
 bool acTab[MAXN][MAXN]; // totalTeam x totalProblem
+
+vector < string > banned_account({"DU_CM"});
 
 void removeLeadingTrailingSpaces(string &str){
     while(str.empty()==false and str.back()==' ') str.pop_back();
@@ -28,8 +30,8 @@ int parseRank(string str){
 }
 string parseTeamName(string str){
     //<div><a href="/user/zuccbot_exe" target="_blank">zuccbot_exe <span style="color:gray">(TonmoyNirjhorSafayat)</span></a></div>
-    str = str.substr(5,str.size()- string("<div>").size());
-    //<a href="/user/zuccbot_exe" target="_blank">zuccbot_exe <span style="color:gray">(TonmoyNirjhorSafayat)</span></a></div>
+    str = str.substr(5,str.size()-string("<div>").size());
+    //<a href="/user/zuccbot_exe" target="_blank">zuccbot_exe <span style="color:gray">(TonmoyNirjhorSafayat)
     string name;
     int start=false;
     for(auto c : str){
@@ -131,6 +133,7 @@ void parse(){
             teamName = parseTeamName(str);
             team[teamRank]=teamName;
             colNumber++;
+         //   cout << teamName <<endl;
         }
         if(str.substr(0,4)=="</td"){
             // no significant information
@@ -141,15 +144,26 @@ void parse(){
             // row end
         }
     }
-    cout << rowNumber <<" "<<colNumber-7<<endl;
+
+    vector  < bool > exclude; exclude.resize(rowNumber + 10,0);
+
+    for(int i=1;i<=rowNumber;i++)
+        exclude[i] = (find(banned_account.begin(),banned_account.end(),team[i])!=banned_account.end());
+
+
+    cout << rowNumber - count(exclude.begin(),exclude.end(),1) <<" "<<colNumber-7<<endl;
+
     for(int i=1;i<=rowNumber;i++){
-        cout << team[i] <<" "<<totalSolve[i]<<" "<<totalPenalty[i]<<endl;
+		if(exclude[i] ==false)
+            cout << team[i] <<" "<<totalSolve[i]<<" "<<totalPenalty[i]<<endl;
     }
     for(int i=1;i<=rowNumber;i++){
-        for(int j=1;j<=colNumber-7;j++){
-            cout << acTab[i][j]<<" ";
-        }
-        cout <<endl;
+		if(exclude[i] ==false) {
+            for(int j=1;j<=colNumber-7;j++){
+                cout << acTab[i][j]<<" ";
+            }
+            cout <<endl;
+		}
     }
 
 }
@@ -159,8 +173,10 @@ int main(int argc , char *args[])
     char output[100],input[100];
     bool fromConsole=true;
     if(fromConsole){
+        cout <<"Contest Number:";
         int a; cin >>a;
         sprintf(output,"contest%02d.txt",a);
+        cout << "input file:";
         cin >> input;
     }
     else {
